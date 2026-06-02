@@ -1,0 +1,12 @@
+# Core
+ultralytics>=8.0.0
+mediapipe>=0.10.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+scikit-image>=0.21.0
+
+# PDF report generation
+reportlab>=4.0.0
+
+# Optional — enables OCR-based AI-tool title detection
+# easyocr>=1.7.0
