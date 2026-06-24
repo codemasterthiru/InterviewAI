@@ -1,6 +1,6 @@
 {
   "status": "success",
-  "generated_at": "2026-06-02T12:51:46",
+  "generated_at": "2026-06-24T13:42:07",
   "video_file": "videos\\payoda_video.mp4",
   "video_metadata": {
     "fps": 59.984,
@@ -10,14 +10,13 @@
     "duration_seconds": 31.09
   },
   "summary": {
-    "total_incidents": 10,
+    "total_incidents": 5,
     "violation_types": {
       "extra_screen_detected": 1,
-      "phone_grip_gesture": 2,
-      "phone_detected": 3,
-      "face_not_visible": 4
+      "phone_detected": 1,
+      "face_not_visible": 3
     },
-    "total_violation_duration_secs": 84.0
+    "total_violation_duration_secs": 45.0
   },
   "violations": [
     {
@@ -31,93 +30,43 @@
       "event_count": 38
     },
     {
-      "start_time": "00:00:00",
-      "end_time": "00:00:12",
-      "duration": "12.0s",
-      "type": "phone_grip_gesture",
-      "confidence": 0.65,
-      "details": "Hand posture consistent with holding a mobile phone",
-      "screenshot": "output\\frame_0000000_phone_grip_gesture.jpg",
-      "event_count": 13
-    },
-    {
-      "start_time": "00:00:05",
-      "end_time": "00:00:18",
-      "duration": "13.0s",
+      "start_time": "00:00:07",
+      "end_time": "00:00:14",
+      "duration": "7.0s",
       "type": "phone_detected",
       "confidence": 0.792,
       "details": "cell phone detected (confidence 0.79)",
-      "screenshot": "output\\frame_0000540_phone_detected.jpg",
-      "event_count": 14
+      "screenshot": "output\\frame_0000420_phone_detected.jpg",
+      "event_count": 8
     },
     {
-      "start_time": "00:00:10",
-      "end_time": "00:00:12",
-      "duration": "2.0s",
+      "start_time": "00:00:16",
+      "end_time": "00:00:17",
+      "duration": "1.0s",
       "type": "face_not_visible",
       "confidence": 0.78,
       "details": "Candidate face not visible — may have left the frame or turned away",
-      "screenshot": "output\\frame_0000600_face_not_visible.jpg",
-      "event_count": 3
+      "screenshot": "output\\frame_0000960_face_not_visible.jpg",
+      "event_count": 2
     },
     {
-      "start_time": "00:00:14",
-      "end_time": "00:00:17",
+      "start_time": "00:00:21",
+      "end_time": "00:00:24",
       "duration": "3.0s",
       "type": "face_not_visible",
       "confidence": 0.78,
       "details": "Candidate face not visible — may have left the frame or turned away",
-      "screenshot": "output\\frame_0000840_face_not_visible.jpg",
+      "screenshot": "output\\frame_0001260_face_not_visible.jpg",
       "event_count": 4
     },
     {
-      "start_time": "00:00:19",
-      "end_time": "00:00:29",
-      "duration": "10.0s",
-      "type": "phone_grip_gesture",
-      "confidence": 0.65,
-      "details": "Hand posture consistent with holding a mobile phone",
-      "screenshot": "output\\frame_0001140_phone_grip_gesture.jpg",
-      "event_count": 11
-    },
-    {
-      "start_time": "00:00:19",
-      "end_time": "00:00:24",
-      "duration": "5.0s",
+      "start_time": "00:00:28",
+      "end_time": "00:00:31",
+      "duration": "3.0s",
       "type": "face_not_visible",
       "confidence": 0.78,
       "details": "Candidate face not visible — may have left the frame or turned away",
-      "screenshot": "output\\frame_0001140_face_not_visible.jpg",
-      "event_count": 6
-    },
-    {
-      "start_time": "00:00:26",
-      "end_time": "00:00:28",
-      "duration": "2.0s",
-      "type": "phone_detected",
-      "confidence": 0.502,
-      "details": "cell phone detected (confidence 0.50)",
-      "screenshot": "output\\frame_0001560_phone_detected.jpg",
-      "event_count": 4
-    },
-    {
-      "start_time": "00:00:26",
-      "end_time": "00:00:31",
-      "duration": "5.0s",
-      "type": "face_not_visible",
-      "confidence": 0.78,
-      "details": "Candidate face not visible — may have left the frame or turned away",
-      "screenshot": "output\\frame_0001380_face_not_visible.jpg",
-      "event_count": 6
-    },
-    {
-      "start_time": "00:00:30",
-      "end_time": "00:00:31",
-      "duration": "1.0s",
-      "type": "phone_detected",
-      "confidence": 0.529,
-      "details": "cell phone detected (confidence 0.53)",
-      "screenshot": "output\\frame_0001800_phone_detected.jpg",
+      "screenshot": "output\\frame_0001680_face_not_visible.jpg",
       "event_count": 4
     }
   ]

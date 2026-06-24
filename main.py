@@ -98,7 +98,7 @@ def main() -> int:
         processor   = VideoProcessor(str(video_path), cfg)
         yolo        = YOLODetector(cfg)
         overlay     = OverlayDetector(cfg)
-        face_gaze   = FaceGazeDetector(cfg)
+        face_gaze   = FaceGazeDetector(cfg, yolo)
         screen      = ScreenAnalyzer(cfg)
         tracker     = ViolationTracker(cfg)
         reporter    = ReportGenerator(output_dir, args.report)

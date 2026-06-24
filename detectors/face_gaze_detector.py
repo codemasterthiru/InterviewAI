@@ -51,7 +51,7 @@ def _ensure_model(filename: str, url: str) -> str:
 class FaceGazeDetector:
     """Uses MediaPipe Tasks API (0.10.x+) to analyse face and hand behaviour."""
 
-    def __init__(self, config) -> None:
+    def __init__(self, config, yolo=None) -> None:
         self.config = config
         import mediapipe as mp  # type: ignore
 
@@ -92,6 +92,8 @@ class FaceGazeDetector:
 
         self._mp = mp
         self._face_ever_seen: bool = False
+        self._last_face_seen_ts: Optional[float] = None
+        self._yolo = yolo
 
     # ── Public ─────────────────────────────────────────────────────────────────
 
@@ -104,19 +106,25 @@ class FaceGazeDetector:
         )
 
         # ── Face analysis ──────────────────────────────────────────────────────
+        h, w = frame.shape[:2]
+
         face_result = self._face_landmarker.detect(mp_image)
         face_landmarks_list = face_result.face_landmarks  # list[list[NormalizedLandmark]]
         num_faces = len(face_landmarks_list)
 
         if num_faces == 0:
             if self._face_ever_seen:
-                violations.append(self._make(
-                    timestamp, "face_not_visible", 0.78,
-                    "Candidate face not visible — may have left the frame or turned away",
-                    None,
-                ))
+                if self._last_face_seen_ts is None:
+                    self._last_face_seen_ts = timestamp
+                if (timestamp - self._last_face_seen_ts) >= self.config.FACE_MISSING_SECONDS:
+                    violations.append(self._make(
+                        timestamp, "face_not_visible", 0.78,
+                        "Candidate face not visible — may have left the frame or turned away",
+                        None,
+                    ))
         else:
             self._face_ever_seen = True
+            self._last_face_seen_ts = timestamp
 
             if num_faces > self.config.MAX_FACES_ALLOWED:
                 violations.append(self._make(
@@ -152,12 +160,29 @@ class FaceGazeDetector:
         if hand_result.hand_landmarks:
             for hand_lm in hand_result.hand_landmarks:
                 if self._is_phone_grip(hand_lm):
-                    violations.append(self._make(
-                        timestamp, "phone_grip_gesture", 0.65,
-                        "Hand posture consistent with holding a mobile phone",
-                        None,
-                    ))
-                    break
+                    # compute hand bbox in pixel coords
+                    xs = [lm.x for lm in hand_lm]
+                    ys = [lm.y for lm in hand_lm]
+                    x1 = int(max(0, min(xs) * w))
+                    y1 = int(max(0, min(ys) * h))
+                    x2 = int(min(w, max(xs) * w))
+                    y2 = int(min(h, max(ys) * h))
+
+                    phone_nearby = False
+                    if self._yolo is not None:
+                        phones = self._yolo.get_recent_objects(timestamp, window=self.config.PHONE_RECENT_WINDOW, cls_name="cell phone")
+                        for p in phones:
+                            if self._iou([x1, y1, x2, y2], p["bbox"]) > self.config.PHONE_HAND_PROXIMITY_IOU:
+                                phone_nearby = True
+                                break
+
+                    if phone_nearby:
+                        violations.append(self._make(
+                            timestamp, "phone_grip_gesture", 0.65,
+                            "Hand posture consistent with holding a mobile phone",
+                            None,
+                        ))
+                        break
 
         return violations
 
@@ -204,6 +229,18 @@ class FaceGazeDetector:
             for t, m in zip(_FINGER_TIPS, _FINGER_MCP)
         )
         return curled >= 3
+
+    @staticmethod
+    def _iou(a: List[int], b: List[int]) -> float:
+        ax1, ay1, ax2, ay2 = a
+        bx1, by1, bx2, by2 = b
+        ix = max(0, min(ax2, bx2) - max(ax1, bx1))
+        iy = max(0, min(ay2, by2) - max(ay1, by1))
+        inter = ix * iy
+        area_a = max(1, (ax2 - ax1) * (ay2 - ay1))
+        area_b = max(1, (bx2 - bx1) * (by2 - by1))
+        union = area_a + area_b - inter
+        return inter / union if union > 0 else 0.0
 
     # ── Shared helper ──────────────────────────────────────────────────────────
 

@@ -16,7 +16,7 @@ class Config:
     # ── YOLO object detection ──────────────────────────────────────────────────
     YOLO_MODEL: str = "yolov8n.pt"       # Nano model; auto-downloaded on first run
     YOLO_CONFIDENCE: float = 0.45        # Default confidence threshold
-    PHONE_CONFIDENCE: float = 0.38       # Lower threshold for cell phones
+    PHONE_CONFIDENCE: float = 0.60       # Lower threshold for cell phones (raised to reduce FPs)
 
     # COCO class names whose detection raises a violation
     SUSPICIOUS_OBJECTS: List[str] = field(default_factory=lambda: [
@@ -26,6 +26,25 @@ class Config:
     # ── Face / people ──────────────────────────────────────────────────────────
     MAX_FACES_ALLOWED: int = 2           # Candidate + interviewer = normal
     FACE_MIN_CONFIDENCE: float = 0.50
+
+    # How long (seconds) a face must be missing before emitting face_not_visible
+    FACE_MISSING_SECONDS: float = 3.0
+
+    # Phone / hand proximity settings (for hand+phone fusion)
+    PHONE_HAND_PROXIMITY_IOU: float = 0.15
+    PHONE_RECENT_WINDOW: float = 2.5
+
+    # Laptop-person overlap IoU threshold: if laptop overlaps person more
+    # than this, treat as likely candidate's primary device (no extra-screen)
+    LAPTOP_PERSON_IOU: float = 0.25
+
+    # Discard very small phone detections (area ratio relative to frame)
+    MIN_PHONE_AREA_RATIO: float = 0.002
+
+    # If a phone display is dark/off, do not count it as an active phone violation
+    PHONE_SCREEN_ACTIVE_DARK_PIXEL_THRESHOLD: int = 50
+    PHONE_SCREEN_ACTIVE_DARK_RATIO: float = 0.78
+    PHONE_SCREEN_ACTIVE_STD: float = 18.0
 
     # ── Gaze analysis (MediaPipe iris landmarks) ───────────────────────────────
     GAZE_H_THRESHOLD: float = 0.30       # Horizontal iris offset ratio for alert
@@ -49,7 +68,7 @@ class Config:
 
     # ── Violation consolidation ────────────────────────────────────────────────
     VIOLATION_MERGE_GAP: float = 2.0     # Merge events < N s apart
-    VIOLATION_MIN_DURATION: float = 0.5  # Discard incidents shorter than N s
+    VIOLATION_MIN_DURATION: float = 1.0  # Discard incidents shorter than N s
     SCREENSHOT_COOLDOWN: float = 4.0     # Min gap between screenshots of same type
 
     # ── Output ─────────────────────────────────────────────────────────────────
